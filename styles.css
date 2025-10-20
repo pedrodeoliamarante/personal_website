@@ -1,0 +1,52 @@
+:root {
+  --xp-blue:#0A64AD;
+  --taskbar-top:#3a6ede;
+  --taskbar-btm:#245edb;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+
+body{
+  font-family:Tahoma,Verdana,sans-serif;
+  background:url("assets/bliss_600dpi.jpg") no-repeat center center fixed;
+  background-size:cover;
+  color:#000;cursor:default;
+}
+
+/* Desktop */
+.desktop{position:relative;height:100vh;overflow:hidden;}
+
+/* Icons */
+.icon{
+  position:absolute;width:82px;text-align:center;
+  color:#fff;text-shadow:0 0 2px #000;text-decoration:none;
+  user-select:none;
+}
+.icon img{width:48px;height:48px;display:block;margin:0 auto 6px;image-rendering:pixelated;}
+
+/* Windows */
+.window.app{position:absolute;background:#ece9d8;user-select:none;}
+.window.is-hidden{display:none;}
+.title-bar{cursor:move;}
+.title-bar-controls button{cursor:default;}
+
+/* Taskbar */
+.taskbar{
+  position:absolute;left:0;right:0;bottom:0;height:34px;
+  display:flex;align-items:center;gap:8px;padding:0 6px;
+  background:linear-gradient(to top,var(--taskbar-btm),var(--taskbar-top));
+  border-top:2px solid #1a4aa5;box-shadow:0 -1px 0 #0a2a75 inset;
+}
+.start-button{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:2px 10px;border-radius:4px;border:1px solid #004b00;
+  background:linear-gradient(to bottom,#3c9e3c,#267326);
+  color:#fff;font-weight:bold;cursor:pointer;
+}
+.task-buttons{
+  display:flex;gap:6px;margin-left:6px;overflow-x:auto;flex:1;
+}
+.task-buttons .button.active{box-shadow:inset 1px 1px 0 #fff;}
+.tray{margin-left:auto;display:flex;align-items:center;gap:8px;color:#fff;}
+.tray img{width:16px;height:16px;image-rendering:pixelated;}
+.clock{font-size:12px;}

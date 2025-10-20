@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Pedro XP Desktop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/xp.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="desktop">
+
+    <!-- Desktop icons -->
+    <a class="icon" style="left:16px; top:24px;" href="#" data-launch="about">
+      <img src="assets/0000 - Open Folder.ico" alt="About Me" />
+      <span>About Me</span>
+    </a>
+
+    <a class="icon" style="left:16px; top:112px;" href="#" data-launch="notepad">
+      <img src="assets/0199 - Notepad.ico" alt="Notepad" />
+      <span>Notepad</span>
+    </a>
+
+    <!-- Windows -->
+    <div class="window app" data-app="about" style="top:80px; left:140px; width:440px;">
+      <div class="title-bar">
+        <div class="title-bar-text">About Me</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <p>Hi! I’m Pedro Amarante, I'm an Embedded Engineer.</p>
+        <p>I build camera pipelines across DSP/GPU/HTP and like retro web.</p>
+      </div>
+    </div>
+
+    <div class="window app" data-app="notepad" style="top:220px; left:260px; width:400px;">
+      <div class="title-bar">
+        <div class="title-bar-text">Notepad</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <textarea style="width:100%; height:200px;">Hello from XP Notepad!</textarea>
+      </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <input id="start-toggle" type="checkbox" hidden />
+      <label class="start-button" for="start-toggle">Start</label>
+      <div id="taskbar-apps" class="task-buttons"></div>
+      <div class="tray">
+        <img src="assets/0037 - Network Computer.ico" width="16" height="16" />
+        <img src="assets/0173 - Volume.ico" width="16" height="16" />
+        <time class="clock">23:57</time>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
