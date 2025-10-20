@@ -1,52 +1,264 @@
 :root {
-  --xp-blue:#0A64AD;
-  --taskbar-top:#3a6ede;
-  --taskbar-btm:#245edb;
+  --xp-blue: #0a64ad;
+  --taskbar-top: #3a6ede;
+  --taskbar-btm: #245edb;
 }
-*{box-sizing:border-box}
-html,body{height:100%;margin:0}
 
-body{
-  font-family:Tahoma,Verdana,sans-serif;
-  background:url("assets/bliss_600dpi.jpg") no-repeat center center fixed;
-  background-size:cover;
-  color:#000;cursor:default;
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  font-family: Tahoma, Verdana, sans-serif;
+  background: url("assets/bliss_600dpi.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #000;
+  cursor: default;
 }
 
 /* Desktop */
-.desktop{position:relative;height:100vh;overflow:hidden;}
+.desktop {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
 
 /* Icons */
-.icon{
-  position:absolute;width:82px;text-align:center;
-  color:#fff;text-shadow:0 0 2px #000;text-decoration:none;
-  user-select:none;
+.icon {
+  position: absolute;
+  width: 82px;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 0 2px #000;
+  text-decoration: none;
+  user-select: none;
 }
-.icon img{width:48px;height:48px;display:block;margin:0 auto 6px;image-rendering:pixelated;}
+.icon img {
+  width: 48px;
+  height: 48px;
+  display: block;
+  margin: 0 auto 6px;
+  image-rendering: pixelated;
+}
+.icon:focus { outline: 1px dotted #fff; outline-offset: 2px; }
 
 /* Windows */
-.window.app{position:absolute;background:#ece9d8;user-select:none;}
-.window.is-hidden{display:none;}
-.title-bar{cursor:move;}
-.title-bar-controls button{cursor:default;}
+.window.app {
+  position: absolute;
+  background: #ece9d8;
+  user-select: none;
+}
+.window.is-hidden { display: none; }
 
-/* Taskbar */
-.taskbar{
-  position:absolute;left:0;right:0;bottom:0;height:34px;
-  display:flex;align-items:center;gap:8px;padding:0 6px;
-  background:linear-gradient(to top,var(--taskbar-btm),var(--taskbar-top));
-  border-top:2px solid #1a4aa5;box-shadow:0 -1px 0 #0a2a75 inset;
+.title-bar {
+  cursor: move;
 }
-.start-button{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:2px 10px;border-radius:4px;border:1px solid #004b00;
-  background:linear-gradient(to bottom,#3c9e3c,#267326);
-  color:#fff;font-weight:bold;cursor:pointer;
+.title-bar-controls button {
+  cursor: default;
 }
-.task-buttons{
-  display:flex;gap:6px;margin-left:6px;overflow-x:auto;flex:1;
+
+/* --- TASKBAR --- */
+.taskbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: linear-gradient(to top, var(--taskbar-btm), var(--taskbar-top));
+  border-top: 2px solid #1a4aa5;
+  box-shadow: 0 -1px 0 #0a2a75 inset;
 }
-.task-buttons .button.active{box-shadow:inset 1px 1px 0 #fff;}
-.tray{margin-left:auto;display:flex;align-items:center;gap:8px;color:#fff;}
-.tray img{width:16px;height:16px;image-rendering:pixelated;}
-.clock{font-size:12px;}
+
+/* --- Start button --- */
+.start-button {
+  display: block;
+  width: 104px;
+  height: 30px;
+  background: url("assets/start_button.jpg") no-repeat left center / cover;
+  border: none;
+  border-radius: 16px;
+  text-indent: -9999px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 1px 0 rgba(0,0,0,.25);
+  cursor: pointer;
+}
+#start-toggle:checked + .start-button {
+  transform: translateY(1px);
+  filter: brightness(0.93);
+}
+
+/* Taskbar buttons (dynamic app list) */
+.task-buttons {
+  display: flex;
+  gap: 6px;
+  margin-left: 6px;
+  overflow-x: auto;
+  flex: 1;
+}
+.task-buttons .button {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:2px 8px; height:26px; font-size:12px;
+  background: linear-gradient(to top,#dfe8fd,#f4f6ff);
+  border:1px solid #a3b2d4; border-radius:4px;
+  box-shadow: inset 0 0 0 1px #fff;
+  cursor:pointer; white-space:nowrap;
+}
+.task-buttons .button.active {
+  background: linear-gradient(to top, #bcd0ff, #e0e9ff);
+  box-shadow: inset 1px 1px 0 #fff;
+}
+.task-buttons .button:hover {
+  background: linear-gradient(to top,#cfe0ff,#eaf0ff);
+}
+
+.task-buttons .button img {
+  width:16px; height:16px;
+  image-rendering: pixelated;
+  display:inline-block;
+}
+
+/* Tray */
+.tray {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+.tray img {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+.clock { font-size: 12px; }
+
+/* --- START MENU --- */
+.start-menu{
+  position: fixed;
+  left: 0;                 /* glued to screen edge */
+  bottom: 34px;            /* taskbar height */
+  display: none;
+  width: 520px;
+  border-radius: 6px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(0,0,0,.3);
+  overflow: hidden;
+  background: #eaf3ff;
+  border: 1px solid #2b5daa;
+  z-index: 1000;
+}
+
+/* Toggle visibility via the checkbox (now a sibling under .desktop) */
+#start-toggle:checked ~ .start-menu{ display:block; }
+#start-toggle:checked ~ .start-menu { display: block; }
+
+/* XP-style Start Menu structure */
+.xp-start {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header (blue gradient) */
+.xp-start-header {
+  background: linear-gradient(#1f4aa6, #123a8e);
+  color: #fff;
+  padding: 10px 12px;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+}
+.user-badge {
+  background: rgba(255,255,255,.15);
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.25);
+}
+
+/* Two-column layout */
+.xp-start-body {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.6), rgba(255,255,255,0)) left top / 1px 100% no-repeat;
+}
+.xp-left {
+  padding: 10px;
+  background: linear-gradient(#f6fbff, #e0ecff);
+  min-height: 260px;
+}
+.xp-right {
+  padding: 10px;
+  background: #f2f4f7;
+  border-left: 1px solid rgba(0,0,0,.08);
+}
+
+/* Items */
+.start-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  width: 100%;
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.start-item img {
+  image-rendering: pixelated;
+}
+.start-item:hover {
+  background: #dbe5ff;
+  border-radius: 4px;
+}
+
+.start-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  color: #000;
+  text-decoration: none;
+  font-size: 13px;
+}
+.start-link:hover { background: #e7edf9; }
+
+/* Footer (green gradient bar) */
+.xp-start-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px;
+  background: linear-gradient(#dff1df, #c2e2c2);
+  border-top: 1px solid rgba(0,0,0,.08);
+}
+.xp-start-footer .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #bfcde0;
+  font-size: 13px;
+}
+.xp-start-footer .button.ghost {
+  background: #fff;
+}
+.xp-start-footer .button.danger {
+  background: #e55;
+  color: #fff;
+  border: 1px solid #b33;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px,1px,1px,1px);
+  white-space: nowrap;
+}

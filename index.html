@@ -11,9 +11,12 @@
 <body>
   <div class="desktop">
 
+    <!-- Start toggle MUST live outside the taskbar so the menu can pin to the real left edge -->
+    <input id="start-toggle" type="checkbox" hidden />
+
     <!-- Desktop icons -->
     <a class="icon" style="left:16px; top:24px;" href="#" data-launch="about">
-      <img src="assets/0000 - Open Folder.ico" alt="About Me" />
+      <img src="assets/0047 - Text Document.ico" alt="About Me" />
       <span>About Me</span>
     </a>
 
@@ -23,7 +26,7 @@
     </a>
 
     <!-- Windows -->
-    <div class="window app" data-app="about" style="top:80px; left:140px; width:440px;">
+    <div class="window app" data-app="about" data-icon="assets/0047 - Text Document.ico" style="top:80px; left:140px; width:440px;">
       <div class="title-bar">
         <div class="title-bar-text">About Me</div>
         <div class="title-bar-controls">
@@ -33,12 +36,13 @@
         </div>
       </div>
       <div class="window-body">
-        <p>Hi! I’m Pedro Amarante, I'm an Embedded Engineer.</p>
-        <p>I build camera pipelines across DSP/GPU/HTP and like retro web.</p>
+        <p>Hi! I’m Pedro Amarante, I'm a programmer.</p>
+        <p>My focus is mostly on the embedded /systems side of things.</p>
+        <p>Welcome to my desktop!</p>
       </div>
     </div>
 
-    <div class="window app" data-app="notepad" style="top:220px; left:260px; width:400px;">
+    <div class="window app" data-app="notepad" data-icon="assets/0199 - Notepad.ico" style="top:220px; left:260px; width:400px;">
       <div class="title-bar">
         <div class="title-bar-text">Notepad</div>
         <div class="title-bar-controls">
@@ -54,15 +58,91 @@
 
     <!-- Taskbar -->
     <div class="taskbar">
-      <input id="start-toggle" type="checkbox" hidden />
-      <label class="start-button" for="start-toggle">Start</label>
+      <label class="start-button" for="start-toggle">
+        <span class="visually-hidden">Start</span>
+      </label>
+
+      <!-- Dynamic taskbar apps (filled by JS) -->
       <div id="taskbar-apps" class="task-buttons"></div>
+
       <div class="tray">
-        <img src="assets/0037 - Network Computer.ico" width="16" height="16" />
-        <img src="assets/0173 - Volume.ico" width="16" height="16" />
+        <img src="assets/0037 - Network Computer.ico" width="16" height="16" alt="Network" />
+        <img src="assets/0173 - Volume.ico" width="16" height="16" alt="Volume" />
         <time class="clock">23:57</time>
       </div>
     </div>
+    <!-- /taskbar -->
+
+    <!-- Start Menu must be a sibling of #start-toggle (outside the taskbar) -->
+    <div class="start-menu" role="menu" aria-label="Start Menu">
+      <div class="xp-start">
+        <div class="xp-start-header">
+          <div class="user-badge">user</div>
+        </div>
+
+        <div class="xp-start-body">
+          <!-- Left: pinned/frequent programs -->
+          <div class="xp-left">
+            <button class="button start-item">
+              <img src="assets/0081 - Internet Explorer.ico" width="16" height="16" alt="" />
+              Internet Explorer
+            </button>
+            <button class="button start-item" data-launch="notepad">
+              <img src="assets/0199 - Notepad.ico" width="16" height="16" alt="" />
+              Notepad
+            </button>
+            <button class="button start-item">
+              <img src="assets/0085 - Windows Media Player.ico" width="16" height="16" alt="" />
+              Windows Media Player
+            </button>
+            <button class="button start-item">
+              <img src="assets/0071 - Microsoft Paint.ico" width="16" height="16" alt="" />
+              Paint
+            </button>
+          </div>
+
+          <!-- Right: system places -->
+          <div class="xp-right">
+            <a class="start-link">
+              <img src="assets/0002 - My Documents.ico" width="16" height="16" alt="" />
+              My Documents
+            </a>
+            <a class="start-link">
+              <img src="assets/0003 - My Pictures.ico" width="16" height="16" alt="" />
+              My Pictures
+            </a>
+            <a class="start-link">
+              <img src="assets/0004 - My Music.ico" width="16" height="16" alt="" />
+              My Music
+            </a>
+            <a class="start-link">
+              <img src="assets/0018 - My Computer.ico" width="16" height="16" alt="" />
+              My Computer
+            </a>
+            <a class="start-link">
+              <img src="assets/0015 - Control Panel.ico" width="16" height="16" alt="" />
+              Control Panel
+            </a>
+            <a class="start-link">
+              <img src="assets/0029 - Start Help.ico" width="16" height="16" alt="" />
+              Help and Support
+            </a>
+          </div>
+        </div>
+
+        <div class="xp-start-footer">
+          <button class="button ghost">
+            <img src="assets/0031 - Start Find.ico" width="16" height="16" alt="" />
+            Search
+          </button>
+          <button class="button danger" data-shutdown>
+            <img src="assets/0032 - Shutdown.ico" width="16" height="16" alt="" />
+            Shut Down...
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /start-menu -->
 
   </div>
 </body>
