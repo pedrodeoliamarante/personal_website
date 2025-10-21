@@ -1,11 +1,24 @@
+/* styles.css — custom XP-style theme for Pedro’s desktop
+   complementing xp.css with layout, icons, taskbar, start menu, and app visuals
+*/
+
+/* ================= Root + Globals ================= */
 :root {
   --xp-blue: #0a64ad;
   --taskbar-top: #3a6ede;
   --taskbar-btm: #245edb;
+  --window-bg: #ece9d8;
+  --window-border: #bfcde0;
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
 
 body {
   font-family: Tahoma, Verdana, sans-serif;
@@ -15,14 +28,13 @@ body {
   cursor: default;
 }
 
-/* Desktop */
 .desktop {
   position: relative;
   height: 100vh;
   overflow: hidden;
 }
 
-/* Icons */
+/* ================= Icons ================= */
 .icon {
   position: absolute;
   width: 82px;
@@ -39,16 +51,26 @@ body {
   margin: 0 auto 6px;
   image-rendering: pixelated;
 }
-.icon:focus { outline: 1px dotted #fff; outline-offset: 2px; }
+.icon span {
+  display: block;
+  font-size: 12px;
+  line-height: 1.1;
+}
+.icon:focus {
+  outline: 1px dotted #fff;
+  outline-offset: 2px;
+}
 
-/* Windows */
+/* ================= Windows ================= */
 .window.app {
   position: absolute;
-  background: #ece9d8;
+  background: var(--window-bg);
+  border: 1px solid var(--window-border);
   user-select: none;
 }
-.window.is-hidden { display: none; }
-
+.window.is-hidden {
+  display: none;
+}
 .title-bar {
   cursor: move;
 }
@@ -56,7 +78,7 @@ body {
   cursor: default;
 }
 
-/* --- TASKBAR --- */
+/* ================= Taskbar ================= */
 .taskbar {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -68,9 +90,10 @@ body {
   background: linear-gradient(to top, var(--taskbar-btm), var(--taskbar-top));
   border-top: 2px solid #1a4aa5;
   box-shadow: 0 -1px 0 #0a2a75 inset;
+  z-index: 100;
 }
 
-/* --- Start button --- */
+/* Start button */
 .start-button {
   display: block;
   width: 104px;
@@ -80,7 +103,8 @@ body {
   border-radius: 16px;
   text-indent: -9999px;
   overflow: hidden;
-  box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 1px 0 rgba(0,0,0,.25);
+  box-shadow: 0 1px 0 rgba(255,255,255,.35) inset,
+              0 1px 0 rgba(0,0,0,.25);
   cursor: pointer;
 }
 #start-toggle:checked + .start-button {
@@ -88,7 +112,7 @@ body {
   filter: brightness(0.93);
 }
 
-/* Taskbar buttons (dynamic app list) */
+/* Taskbar buttons */
 .task-buttons {
   display: flex;
   gap: 6px;
@@ -97,12 +121,18 @@ body {
   flex: 1;
 }
 .task-buttons .button {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:2px 8px; height:26px; font-size:12px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:2px 8px;
+  height:26px;
+  font-size:12px;
   background: linear-gradient(to top,#dfe8fd,#f4f6ff);
-  border:1px solid #a3b2d4; border-radius:4px;
+  border:1px solid #a3b2d4;
+  border-radius:4px;
   box-shadow: inset 0 0 0 1px #fff;
-  cursor:pointer; white-space:nowrap;
+  cursor:pointer;
+  white-space:nowrap;
 }
 .task-buttons .button.active {
   background: linear-gradient(to top, #bcd0ff, #e0e9ff);
@@ -111,7 +141,6 @@ body {
 .task-buttons .button:hover {
   background: linear-gradient(to top,#cfe0ff,#eaf0ff);
 }
-
 .task-buttons .button img {
   width:16px; height:16px;
   image-rendering: pixelated;
@@ -131,35 +160,36 @@ body {
   height: 16px;
   image-rendering: pixelated;
 }
-.clock { font-size: 12px; }
+.clock {
+  font-size: 12px;
+}
 
-/* --- START MENU --- */
-.start-menu{
+/* ================= Start Menu ================= */
+.start-menu {
   position: fixed;
-  left: 0;                 /* glued to screen edge */
-  bottom: 34px;            /* taskbar height */
+  left: 0;
+  bottom: 34px;
   display: none;
   width: 520px;
   border-radius: 6px;
-  box-shadow: 0 14px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(0,0,0,.3);
+  box-shadow: 0 14px 30px rgba(0,0,0,.45),
+              0 0 0 1px rgba(0,0,0,.3);
   overflow: hidden;
   background: #eaf3ff;
   border: 1px solid #2b5daa;
   z-index: 1000;
 }
+#start-toggle:checked ~ .start-menu {
+  display:block;
+}
 
-/* Toggle visibility via the checkbox (now a sibling under .desktop) */
-#start-toggle:checked ~ .start-menu{ display:block; }
-#start-toggle:checked ~ .start-menu { display: block; }
-
-/* XP-style Start Menu structure */
 .xp-start {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-/* Header (blue gradient) */
+/* Header */
 .xp-start-header {
   background: linear-gradient(#1f4aa6, #123a8e);
   color: #fff;
@@ -176,12 +206,13 @@ body {
   border: 1px solid rgba(0,0,0,.25);
 }
 
-/* Two-column layout */
+/* Body (columns) */
 .xp-start-body {
   display: grid;
   grid-template-columns: 1fr 220px;
   background:
-    linear-gradient(90deg, rgba(255,255,255,.6), rgba(255,255,255,0)) left top / 1px 100% no-repeat;
+    linear-gradient(90deg, rgba(255,255,255,.6), rgba(255,255,255,0))
+    left top / 1px 100% no-repeat;
 }
 .xp-left {
   padding: 10px;
@@ -194,7 +225,7 @@ body {
   border-left: 1px solid rgba(0,0,0,.08);
 }
 
-/* Items */
+/* Start menu buttons */
 .start-item {
   display: flex;
   align-items: center;
@@ -208,14 +239,10 @@ body {
   border: none;
   cursor: pointer;
 }
-.start-item img {
-  image-rendering: pixelated;
-}
 .start-item:hover {
   background: #dbe5ff;
   border-radius: 4px;
 }
-
 .start-link {
   display: flex;
   align-items: center;
@@ -226,9 +253,11 @@ body {
   text-decoration: none;
   font-size: 13px;
 }
-.start-link:hover { background: #e7edf9; }
+.start-link:hover {
+  background: #e7edf9;
+}
 
-/* Footer (green gradient bar) */
+/* Footer */
 .xp-start-footer {
   display: flex;
   justify-content: flex-end;
@@ -255,6 +284,175 @@ body {
   border: 1px solid #b33;
 }
 
+/* ================= Work Window ================= */
+.work-body {
+  padding-top: 6px;
+}
+.work-toolbar {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:#333;
+  margin:2px 0 8px;
+}
+.work-toolbar .sep { opacity:.5; }
+.work-toolbar .crumb { opacity:.85; }
+.work-toolbar .crumb.current { font-weight:bold; opacity:1; }
+
+.work-layout {
+  display:grid;
+  grid-template-columns: 260px 1fr;
+  gap:8px;
+  min-height: 260px;
+}
+.work-nav {
+  background:#fff;
+  border:1px solid var(--window-border);
+  border-radius:4px;
+  padding:6px;
+  overflow:auto;
+}
+.work-tree {
+  margin:0;
+  padding-left: 0;
+}
+.work-tree li {
+  list-style:none;
+  margin:2px 0;
+}
+.work-item {
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px;
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:4px;
+  text-align:left;
+  cursor:pointer;
+  font-size:13px;
+}
+.work-item:hover {
+  background:#eaf0ff;
+  border-color:#d0dcf5;
+}
+.work-item.is-active {
+  background:#dce8ff;
+  border-color:#a7baf0;
+}
+.work-pane {
+  display:none;
+  background:#fff;
+  border:1px solid var(--window-border);
+  border-radius:4px;
+  padding:10px;
+}
+.work-pane.is-visible {
+  display:block;
+}
+.work-pane .meta {
+  margin:0 0 8px;
+  font-size:12px;
+  color:#444;
+}
+.work-pane .bullets {
+  margin: 0 0 8px 18px;
+}
+.work-pane .bullets li {
+  margin-bottom:4px;
+}
+.work-pane .stack {
+  font-size:12px;
+  color:#222;
+}
+/* ==== Mail (Work app as email client) ==== */
+.mail-toolbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px;
+}
+.mail-title { font-weight:bold; }
+.mail-actions .btn {
+  padding:4px 8px; border:1px solid #bfcde0; border-radius:4px; background:#fff; font-size:12px;
+}
+.mail-actions .btn.ghost { background:#fff; }
+
+.mail-layout {
+  display:grid; grid-template-columns: 320px 1fr; gap:8px; min-height:260px;
+}
+.mail-list {
+  background:#fff; border:1px solid var(--window-border); border-radius:4px; overflow:auto;
+}
+.mail-pane {
+  background:#fff; border:1px solid var(--window-border); border-radius:4px; overflow:auto;
+  padding:10px;
+}
+
+.mail-item {
+  padding:8px; border-bottom:1px solid #e6ecf6; cursor:pointer; outline:none;
+}
+.mail-item:last-child { border-bottom:none; }
+.mail-item.is-selected { background:#eaf0ff; }
+.mail-item.is-unread .mail-subject { font-weight:bold; }
+
+.mail-item-top { display:flex; justify-content:space-between; font-size:12px; color:#444; }
+.mail-subject { margin:2px 0; }
+.mail-snippet { font-size:12px; color:#555; }
+.mail-tags { margin-top:4px; display:flex; gap:4px; }
+.tag { font-size:11px; padding:2px 6px; border:1px solid #bfcde0; border-radius:10px; background:#f7faff; }
+
+.mail-header { border-bottom:1px solid #e6ecf6; margin-bottom:8px; padding-bottom:6px; }
+.mail-subject-lg { font-size:16px; font-weight:bold; margin-bottom:4px; }
+.mail-meta { font-size:12px; color:#444; display:flex; gap:16px; flex-wrap:wrap; }
+.mail-bullets { margin:8px 0 0 18px; }
+.mail-bullets li { margin-bottom:4px; }
+
+/* ================= Context Menu ================= */
+.wm-context {
+  background: #f9f9f9;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+.wm-context button {
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.wm-context button:hover {
+  background: #dce8ff;
+}
+.wm-context button.danger {
+  color: #b00;
+}
+.wm-context hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 4px 0;
+}
+
+/* ================= Shutdown Overlay ================= */
+.wm-shutdown {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Tahoma, sans-serif;
+  font-size: 20px;
+  z-index: 999999;
+}
+
+/* ================= Utilities ================= */
 .visually-hidden {
   position: absolute !important;
   height: 1px; width: 1px;
@@ -262,3 +460,4 @@ body {
   clip: rect(1px,1px,1px,1px);
   white-space: nowrap;
 }
+
