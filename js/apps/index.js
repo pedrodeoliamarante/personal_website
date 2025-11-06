@@ -56,7 +56,7 @@
           period: 'Nov 2025 - Current',
           unread: true,
           bullets: [
-            'Working on the Infotainment Platform Audio team, developing everything related to Audio in the different RW vehicles',
+            'Working on the Infotainment Platform Audio team',
 
           ]
         },
