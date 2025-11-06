@@ -125,48 +125,52 @@
 
   // Attach minimal dragging on title bar
   function enableDrag(winEl) {
-    const bar = qs(winEl, '.title-bar');
-    if (!bar) return;
+  const bar = winEl.querySelector('.title-bar');
+  if (!bar) return;
 
-    let dragging = false;
-    let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+  let dragging = false;
+  let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
-    const onDown = (e) => {
-      // ignore control buttons
-      if (e.target.closest('.title-bar-controls')) return;
-      if (winEl.dataset.maximized === '1') return; // don't drag when maximized
-      dragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      startLeft = parseInt(winEl.style.left || '0', 10);
-      startTop  = parseInt(winEl.style.top  || '0', 10);
-      document.body.style.userSelect = 'none';
-      bringToFrontInternal(winEl);
-      setActiveInternal(winEl.dataset.appId);
-      e.preventDefault();
-    };
+  const onMove = (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const taskbarH = document.querySelector('.taskbar')?.offsetHeight || 34;
+    const pad = 8;
+    const maxL = window.innerWidth - pad - 50;
+    const maxT = window.innerHeight - taskbarH - pad - 30;
+    const newL = Math.max(pad, Math.min(startLeft + dx, maxL));
+    const newT = Math.max(pad, Math.min(startTop  + dy, maxT));
+    winEl.style.left = `${newL}px`;
+    winEl.style.top  = `${newT}px`;
+  };
 
-    const onMove = (e) => {
-      if (!dragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      const newL = clamp(startLeft + dx, 0, window.innerWidth  - 50);
-      const newT = clamp(startTop  + dy, 0, window.innerHeight - 60);
-      winEl.style.left = `${newL}px`;
-      winEl.style.top  = `${newT}px`;
-    };
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    document.body.style.userSelect = '';
+    saveWindowState(winEl.dataset.appId);
+  };
 
-    const onUp = () => {
-      if (!dragging) return;
-      dragging = false;
-      document.body.style.userSelect = '';
-      saveWindowState(winEl.dataset.appId);
-    };
-
-    bar.addEventListener('mousedown', onDown);
+  bar.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.title-bar-controls')) return;
+    if (winEl.dataset.maximized === '1') return;
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(winEl.style.left || '0', 10);
+    startTop  = parseInt(winEl.style.top  || '0', 10);
+    document.body.style.userSelect = 'none';
+    bringToFrontInternal(winEl);
+    setActiveInternal(winEl.dataset.appId);
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
-  }
+    e.preventDefault();
+  });
+}
+
 
   function applySavedGeometry(id, winEl) {
     const s = loadWindowState(id);

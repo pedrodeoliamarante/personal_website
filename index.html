@@ -30,6 +30,16 @@
       <span>Work Experience</span>
     </a>
 
+    <a class="icon" style="left:16px; top:288px;" href="#" data-launch="bio">
+      <img src="assets/msn_butterfly.png" alt="Bio (MSN)" />
+      <span>Bio (MSN)</span>
+    </a>
+    <a class="icon" style="left:16px; top:376px;" href="#" data-launch="contact">
+  <img src="assets/address_book.png" alt="Contact" />
+  <span>Contact</span>
+</a>
+
+
     <!-- Taskbar -->
     <div class="taskbar">
       <label class="start-button" for="start-toggle">
@@ -69,6 +79,15 @@
               <img src="assets/0002 - My Documents.ico" width="16" height="16" alt="" />
               Work Experience
             </button>
+            <button class="button start-item" data-launch="bio">
+              <img src="assets/msn_butterfly.png" width="16" height="16" alt="" />
+              Bio (MSN)
+            </button>
+            <button class="button start-item" data-launch="contact">
+  <img src="assets/address_book.png" width="16" height="16" alt="" />
+  Contact
+</button>
+
           </div>
 
           <!-- Right: system places (non-functional placeholders) -->
@@ -189,16 +208,167 @@
         </div>
       </div>
     </template>
+    <template id="tpl-bio">
+    <div class="window app msn-win" data-app="bio" data-icon="assets/msn_butterfly.png" style="top:160px; left:160px; width:640px;">
+      <div class="title-bar">
+        <div class="title-bar-text">MSN Messenger — Conversation</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+
+      <div class="window-body msn-body">
+        <!-- Toolbar -->
+        <div class="msn-toolbar" role="toolbar" aria-label="MSN actions">
+          <div class="msn-toolbar-group">
+            <button class="msn-tbtn" data-act="invite" title="Invite">Invite</button>
+            <button class="msn-tbtn" data-act="sendfiles" title="Send Files">Send Files</button>
+            <button class="msn-tbtn" data-act="webcam" title="Webcam">Webcam</button>
+            <button class="msn-tbtn" data-act="audio" title="Audio">Audio</button>
+            <button class="msn-tbtn" data-act="activities" title="Activities">Activities</button>
+            <button class="msn-tbtn" data-act="games" title="Games">Games</button>
+          </div>
+          <div class="msn-presence">
+            <span class="dot online" aria-hidden="true"></span>
+            <select class="msn-status" aria-label="Status">
+              <option value="online" selected>Online</option>
+              <option value="away">Away</option>
+              <option value="busy">Busy</option>
+              <option value="offline">Offline</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Header: “To:” -->
+        <div class="msn-to">
+          <label>To:</label>
+          <input class="msn-to-input" value="Pedro Amarante" readonly />
+        </div>
+
+        <div class="msn-layout">
+          <!-- Chat transcript -->
+          <section class="msn-chat" aria-live="polite" aria-label="Conversation"></section>
+
+          <!-- Right avatars column -->
+          <aside class="msn-avatars" aria-label="Display pictures">
+            <div class="msn-avatar">
+              <img src="assets/msn_butterfly.png" alt="Contact avatar" />
+            </div>
+            <div class="msn-avatar">
+              <img src="assets/avatar_pedro.jpg" alt="Pedro avatar" />
+            </div>
+          </aside>
+        </div>
+
+        <!-- Composer (disabled for fake chat) -->
+        <div class="msn-compose">
+          <div class="msn-formatbar">
+            <button class="fmt">A</button>
+            <button class="fmt">🙂</button>
+            <button class="fmt">🎤</button>
+            <button class="fmt">😉</button>
+            <button class="fmt">🎁</button>
+          </div>
+          <textarea class="msn-input" placeholder="(This is a bio demo — messages auto-play)"></textarea>
+          <div class="msn-sendcol">
+            <button class="msn-send" disabled>Send</button>
+            <button class="msn-nudge" title="Nudge">Nudge</button>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="msn-footer">
+          <div class="left">Never give out your password or credit card number in an instant message conversation.</div>
+          <div class="right">
+            <button class="msn-ctrl" data-act="play">Play</button>
+            <button class="msn-ctrl" data-act="pause">Pause</button>
+            <button class="msn-ctrl" data-act="replay">Replay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template id="tpl-contact">
+  <div class="window app contact-win" data-app="contact" data-icon="assets/0050 - Address Book.ico" style="top:180px; left:220px; width:520px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Contact</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="contact-card">
+        <div class="contact-head">
+          <img class="contact-avatar" src="assets/avatar_pedro.jpg" alt="Pedro avatar" onerror="this.style.display='none'"/>
+          <div class="contact-meta">
+            <div class="contact-name" data-f="name">—</div>
+            <div class="contact-title" data-hide-if-empty><span data-f="title"></span></div>
+            <div class="contact-company" data-hide-if-empty><span data-f="company"></span></div>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <div class="row" data-hide-if-empty><span>Email</span><a href="#" data-f="email"></a><button class="mini" data-act="copy-email">Copy</button></div>
+          <div class="row" data-hide-if-empty><span>Phone</span><span data-f="phone"></span><button class="mini" data-act="copy-phone">Copy</button></div>
+          <div class="row" data-hide-if-empty><span>Location</span><span data-f="loc"></span></div>
+          <div class="row" data-hide-if-empty><span>Website</span><a target="_blank" rel="noopener" data-f="site"></a></div>
+          <div class="row" data-hide-if-empty><span>Links</span>
+            <span class="links">
+              <a target="_blank" rel="noopener" data-hide-if-empty data-f="li"></a>
+              <a target="_blank" rel="noopener" data-hide-if-empty data-f="gh"></a>
+            </span>
+          </div>
+          <div class="row" data-hide-if-empty><span>Note</span><span data-f="note"></span></div>
+        </div>
+
+        <div class="contact-actions">
+          <button class="btn" data-act="email">Email Me</button>
+          <button class="btn" data-act="vcard">Save vCard</button>
+        </div>
+
+        <div class="contact-toast" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</template>
+
 
   </div>
+  <script>
+  // Mobile helpers: real viewport height + mobile class
+  (function () {
+    const root = document.documentElement;
+
+    function setVH() {
+      const vh = window.innerHeight * 0.01;
+      root.style.setProperty('--vh', `${vh}px`);
+    }
+    setVH();
+    window.addEventListener('resize', setVH);
+
+    // Flag small screens for CSS (<= 900px)
+    function setMobileFlag() {
+      const isMobile = window.matchMedia('(max-width: 900px)').matches;
+      root.classList.toggle('is-mobile', isMobile);
+    }
+    setMobileFlag();
+    window.addEventListener('resize', setMobileFlag);
+  })();
+</script>
 
   <!-- ===================== Scripts ===================== -->
   <script src="js/core/windowManager.js"></script>
   <script src="js/ui/taskbar.js"></script>
   <script src="js/ui/startMenu.js"></script>
   <script src="js/apps/index.js"></script>
+  <script src="js/apps/bio.js"></script>
   <script src="js/ui/desktop.js"></script>
   <script src="js/main.js"></script> <!-- optional -->
+   
 
 </body>
 </html>

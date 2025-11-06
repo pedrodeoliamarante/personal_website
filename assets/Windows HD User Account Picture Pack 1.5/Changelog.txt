@@ -1,0 +1,15 @@
+Dates are dd/mm/yy.
+
+Version 1.5 (24/07/22)
+
+Added:
+from Longhorn:
+- user (from Robert Stein's Flickr, it's not super high res but still better than what was included. Also note that the version included in Longhorn was darkened)
+from 7:
+- Better versions of usertile31 and 36
+
+===============================================================
+
+Version 1.0 (26/05/20)
+
+Initial release. 

@@ -52,12 +52,12 @@
         {
           id: 'w-rivian',
           company: 'Rivian & Volkswagen Group Technologies, LLC',
-          role: 'Software Engineer (Embedded Systems / Firmware)',
-          period: 'Starting Nov 2025 • Palo Alto, CA (upcoming)',
+          role: 'Software Engineer (Infotainment Audio)',
+          period: 'Nov 2025 - Current',
           unread: true,
-          tags: ['upcoming'],
           bullets: [
-            'Offer accepted; role start planned for November 2025.',
+            'Working on the Infotainment Audio team, developing everything related to Audio in the different RW vehicles',
+
           ]
         },
      
@@ -66,12 +66,12 @@
           id: 'w-metalenz',
           company: 'Metalenz Inc.',
           role: 'Embedded Systems Engineer',
-          period: 'Jun 2024 – Present • Boston, MA',
+          period: 'Jun 2024 – October 2025 • Boston, MA',
           location: 'Boston, MA',
           bullets: [
             'Led embedded development for Polar-ID, a polarization-based biometric system on AOSP.',
-            'Brought up polarization sensor, VCSEL, and ToF driver via MIPI-CSI and Linux drivers.',
-            'Integrated biometric pipelines into CamX; optimized inference on DSP with SIMD/parallelism.',
+            'Brought up polarization sensor, VCSEL, and other drivers Linux drivers.',
+            'Integrated polarized based imaging pipelines into CamX; optimized inference on DSP with SIMD/parallelism.',
             'Validated the optical stack with scopes, logic analyzers, ADC probes, and kernel tooling.',
             'Built eBPF tracing to track latency and drops; tuned power, clocks, and sensor states.',
             'Extended SM8550 BSP; enabled secure boot and TrustZone binaries (QTEE).',
@@ -229,6 +229,109 @@
       return listEl.querySelector(`.mail-item[data-id="${id}"]`)?.classList.contains('is-selected');
     }
   }
+  // ---------- Contact (card + quick actions) ----------
+WM.registerApp({
+  id: 'contact',
+  title: 'Contact',
+  icon: 'assets/address_book.png', // fallback icon below if you don't have this
+  template: '#tpl-contact',
+  init(rootEl) {
+    // --- Your contact data (fill what you have; blanks are auto-hidden) ---
+    const info = {
+      name: 'Pedro Amarante',
+      title: 'Software Engineer — Infotainment Audio',
+      company: 'Rivian & Volkswagen Group Technologies, LLC',
+      email: 'ppedrolia@gmail.com',
+      location: 'Palo Alto, CA',
+      website: 'https://pedroamarante.com',
+      linkedin: 'https://www.linkedin.com/in/pedro-amarante-8910b4240/',
+
+                        
+    };
+
+    // Wire values into the UI; hide empty rows/links
+    function fill(sel, value, formatter = (v)=>v) {
+      const el = rootEl.querySelector(sel);
+      if (!el) return;
+      if (!value) { el.closest('[data-hide-if-empty]')?.remove(); return; }
+      el.textContent = formatter(value);
+      if (el.tagName === 'A') el.href = value;
+    }
+
+    fill('[data-f="name"]', info.name);
+    fill('[data-f="title"]', info.title);
+    fill('[data-f="company"]', info.company);
+    fill('[data-f="email"]', info.email);
+    fill('[data-f="phone"]', info.phone);
+    fill('[data-f="loc"]', info.location);
+    fill('[data-f="site"]', info.website, v => (rootEl.querySelector('[data-f="site"]').href = v, new URL(v).host));
+    fill('[data-f="li"]', info.linkedin, v => (rootEl.querySelector('[data-f="li"]').href = v, 'LinkedIn'));
+    fill('[data-f="gh"]', info.github, v => (rootEl.querySelector('[data-f="gh"]').href = v, 'GitHub'));
+    fill('[data-f="note"]', info.note);
+
+    // Mailto button
+    rootEl.querySelector('[data-act="email"]')?.addEventListener('click', () => {
+      if (info.email) location.href = `mailto:${encodeURIComponent(info.email)}?subject=${encodeURIComponent('Hello Pedro')}`;
+    });
+
+    // Copy helpers
+    function copy(text) {
+      if (!text) return;
+      navigator.clipboard?.writeText(text).then(() => {
+        flash('Copied!');
+      }).catch(() => {
+        flash('Copy failed');
+      });
+    }
+    rootEl.querySelector('[data-act="copy-email"]')?.addEventListener('click', () => copy(info.email));
+    rootEl.querySelector('[data-act="copy-phone"]')?.addEventListener('click', () => copy(info.phone));
+
+    // vCard download
+    rootEl.querySelector('[data-act="vcard"]')?.addEventListener('click', () => {
+      const lines = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${info.name || ''}`,
+        `ORG:${info.company || ''}`,
+        `TITLE:${info.title || ''}`,
+        info.email ? `EMAIL;TYPE=INTERNET:${info.email}` : '',
+        info.phone ? `TEL;TYPE=CELL:${info.phone}` : '',
+        info.location ? `ADR;TYPE=HOME:;;${info.location.replace(/,/g,';')}` : '',
+        info.website ? `URL:${info.website}` : '',
+        info.linkedin ? `X-SOCIALPROFILE;type=linkedin:${info.linkedin}` : '',
+        info.github ? `X-SOCIALPROFILE;type=github:${info.github}` : '',
+        info.note ? `NOTE:${info.note}` : '',
+        'END:VCARD'
+      ].filter(Boolean).join('\r\n');
+
+      const blob = new Blob([lines], { type: 'text/vcard' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (info.name || 'contact') + '.vcf';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
+    });
+
+    // Tiny toast
+    function flash(text) {
+      let t = rootEl.querySelector('.contact-toast');
+      if (!t) {
+        t = document.createElement('div');
+        t.className = 'contact-toast';
+        rootEl.appendChild(t);
+      }
+      t.textContent = text;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1200);
+    }
+
+    // Fallback icon if missing
+    const meta = rootEl.closest('.window.app');
+    if (meta && !meta.dataset.icon) meta.dataset.icon = 'assets/0096 - Mail.ico';
+  }
+});
 
   // ================= utils =================
   function escapeHtml(s) {

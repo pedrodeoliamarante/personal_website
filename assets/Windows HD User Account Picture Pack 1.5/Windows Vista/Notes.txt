@@ -1,0 +1,4 @@
+- usertile2, 5 and 6 have different colored backgrounds because that's what the original images used.
+- usertile10 is rather low res compared to the others because it was taken down from Getty Images, and this was the best I found. 
+- Some of the others present here may have less/more saturation than they do in Vista.
+- guest and user are not present as they were most likely made by Iconfactory for Microsoft, and neither have released them in higher res. 

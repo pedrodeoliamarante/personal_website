@@ -90,7 +90,7 @@ body {
   background: linear-gradient(to top, var(--taskbar-btm), var(--taskbar-top));
   border-top: 2px solid #1a4aa5;
   box-shadow: 0 -1px 0 #0a2a75 inset;
-  z-index: 100;
+  z-index: 10000;
 }
 
 /* Start button */
@@ -107,11 +107,10 @@ body {
               0 1px 0 rgba(0,0,0,.25);
   cursor: pointer;
 }
-#start-toggle:checked + .start-button {
+#start-toggle:checked ~ .taskbar .start-button {
   transform: translateY(1px);
   filter: brightness(0.93);
 }
-
 /* Taskbar buttons */
 .task-buttons {
   display: flex;
@@ -407,6 +406,86 @@ body {
 .mail-meta { font-size:12px; color:#444; display:flex; gap:16px; flex-wrap:wrap; }
 .mail-bullets { margin:8px 0 0 18px; }
 .mail-bullets li { margin-bottom:4px; }
+/* ===== MSN Bio window ===== */
+.msn-body { padding: 6px; background: linear-gradient(#eef4fd,#ffffff); }
+.msn-toolbar {
+  display:flex; justify-content:space-between; align-items:center;
+  background: linear-gradient(#f8fbff,#e7effd);
+  border:1px solid #bfcde0; border-radius:6px; padding:6px 8px; margin-bottom:6px;
+}
+.msn-toolbar-group { display:flex; gap:6px; }
+.msn-tbtn {
+  font-size:12px; padding:4px 8px; border:1px solid #bfcde0; border-radius:4px;
+  background:#fff; cursor:pointer;
+}
+.msn-tbtn:hover { background:#f5f9ff; }
+.msn-presence { display:flex; align-items:center; gap:6px; }
+.msn-status { font-size:12px; }
+.dot { width:10px; height:10px; border-radius:50%; display:inline-block; border:1px solid #777; }
+.dot.online { background:#2ecc71; }
+.dot.away { background:#f1c40f; }
+.dot.busy { background:#e74c3c; }
+.dot.offline { background:#7f8c8d; }
+
+.msn-to {
+  display:flex; align-items:center; gap:6px;
+  border:1px solid #bfcde0; border-radius:6px; background:#fff; padding:6px 8px; margin-bottom:6px;
+}
+.msn-to label { font-size:12px; color:#333; }
+.msn-to-input {
+  flex:1; border:none; outline:none; font-size:12px; padding:2px 4px; background:transparent;
+}
+
+.msn-layout { display:grid; grid-template-columns: 1fr 160px; gap:8px; min-height:260px; }
+.msn-chat {
+  background:#fff; border:1px solid #bfcde0; border-radius:6px; padding:8px;
+  overflow:auto; max-height:44vh;
+}
+.msn-avatars { display:flex; flex-direction:column; gap:8px; }
+.msn-avatar {
+  background:#fff; border:1px solid #bfcde0; border-radius:6px; padding:8px; display:flex; justify-content:center; align-items:center;
+}
+.msn-avatar img { width:120px; height:120px; object-fit:cover; border-radius:8px; image-rendering:pixelated; }
+
+.msn-compose {
+  display:grid; grid-template-columns: 1fr 100px; gap:8px; align-items:stretch; margin-top:6px;
+}
+.msn-formatbar {
+  grid-column: 1 / span 1;
+  display:flex; gap:6px; margin-bottom:4px;
+}
+.msn-input {
+  grid-column: 1 / span 1;
+  height:84px; width:100%; resize:vertical;
+  border:1px solid #bfcde0; border-radius:6px; padding:8px; font-size:13px;
+  background:#fdfefe;
+}
+.msn-sendcol { display:flex; flex-direction:column; gap:6px; justify-content:flex-end; }
+.msn-send, .msn-nudge {
+  padding:6px 10px; border:1px solid #bfcde0; border-radius:6px; background:#fff; cursor:pointer; font-size:12px;
+}
+.msn-send[disabled] { opacity:.6; cursor:not-allowed; }
+
+.msn-footer {
+  display:flex; align-items:center; justify-content:space-between; margin-top:6px;
+  font-size:11px; color:#555;
+}
+.msn-ctrl { padding:4px 8px; border:1px solid #bfcde0; border-radius:6px; background:#fff; font-size:12px; cursor:pointer; }
+.msn-ctrl:hover { background:#f5f9ff; }
+
+/* Chat bubbles */
+.msn-line { display:flex; gap:8px; margin:6px 0; align-items:flex-start; }
+.msn-line .avatar { width:28px; height:28px; border-radius:4px; background:#dfe8ff; flex:none; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.msn-line .avatar img { width:100%; height:100%; object-fit:cover; }
+.msn-msg {
+  max-width: 82%; padding:6px 8px; border-radius:8px; border:1px solid #dfe6f5; background:#f7faff; font-size:13px;
+}
+.msn-msg.me { background:#eef6ff; border-color:#ccdafa; }
+.msn-meta { font-size:10px; color:#777; margin-top:2px; }
+
+/* Nudge effect (shake) */
+@keyframes msn-nudge { 10%, 90% { transform: translate(-2px, 0); } 20%, 80% { transform: translate(4px, 0); } 30%, 50%, 70% { transform: translate(-6px, 0);} 40%, 60% { transform: translate(6px, 0);} }
+.msn-win.is-nudged { animation: msn-nudge 0.35s linear 1; }
 
 /* ================= Context Menu ================= */
 .wm-context {
@@ -459,5 +538,210 @@ body {
   overflow: hidden;
   clip: rect(1px,1px,1px,1px);
   white-space: nowrap;
+}
+/* ===== Contact app ===== */
+.contact-card {
+  display: grid;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--window-border);
+  border-radius: 6px;
+  padding: 10px;
+}
+.contact-head {
+  display: flex; gap: 10px; align-items: center;
+  border-bottom: 1px solid #e6ecf6; padding-bottom: 8px; margin-bottom: 4px;
+}
+.contact-avatar {
+  width: 72px; height: 72px; border-radius: 8px; object-fit: cover; image-rendering: pixelated;
+  border: 1px solid #cfd9ea;
+}
+.contact-meta { display: grid; gap: 2px; }
+.contact-name { font-size: 18px; font-weight: 700; }
+.contact-title, .contact-company { font-size: 13px; color: #444; }
+
+.contact-grid { display: grid; gap: 6px; }
+.contact-grid .row {
+  display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 8px;
+  font-size: 13px;
+}
+.contact-grid .row > span:first-child { color: #333; opacity: .85; }
+.contact-grid .links a { margin-right: 10px; }
+
+.contact-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+.contact-actions .btn, .contact-grid .mini {
+  padding: 4px 10px; border:1px solid #bfcde0; border-radius:6px; background:#fff; font-size:12px; cursor:pointer;
+}
+.contact-actions .btn:hover, .contact-grid .mini:hover { background:#f5f9ff; }
+
+/* Tiny toast */
+.contact-toast {
+  position: absolute; right: 10px; bottom: 10px;
+  background: rgba(20,20,20,.9); color: #fff; padding: 6px 10px; border-radius: 6px;
+  font-size: 12px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: .2s ease;
+}
+.contact-toast.show { opacity: 1; transform: translateY(0); }
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .contact-grid .row { grid-template-columns: 100px 1fr auto; }
+  .contact-avatar { width: 64px; height: 64px; }
+}
+
+/* ====== Responsive foundation ====== */
+:root {
+  --tb-h: 34px;               /* taskbar height (desktop default) */
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+
+/* Use dynamic viewport height where supported (fallback: 100vh) */
+.desktop {
+  height: calc((var(--vh, 1vh) * 100));
+}
+
+/* Make taskbar/menus use the variable height */
+.taskbar { height: var(--tb-h); }
+.start-menu { bottom: var(--tb-h); }
+
+/* ====== Breakpoint 900px: tablet & big phones in landscape ====== */
+@media (max-width: 900px) {
+  :root { --tb-h: 42px; } /* bigger touch target */
+
+  body {
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Icons: stop absolute layout and flow them in a grid */
+  .desktop {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(72px, 1fr));
+    grid-auto-rows: max-content;
+    gap: 10px 12px;
+    padding: 12px 12px calc(var(--tb-h) + 12px + var(--safe-b));
+  }
+  .desktop > .icon {
+    position: static !important; /* overrides inline top/left */
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Windows: fit within screen, avoid dragging headaches */
+ /* Windows: mobile-friendly size without pinning right/bottom */
+.window.app {
+  position: absolute; /* what WM drag logic expects */
+  top: calc(var(--safe-t) + 8px);
+  left: 8px;
+  /* DO NOT set right/bottom here */
+  width: calc(100vw - 16px); /* fills horizontally but still movable */
+  height: auto;
+  max-height: calc(100dvh - var(--tb-h) - 24px - var(--safe-b) - var(--safe-t));
+  overflow: hidden;
+  border-radius: 8px;
+}
+.window .window-body { height: 100%; overflow: auto; }
+
+  .title-bar { cursor: default; } /* dragging feels awkward on touch */
+
+  /* Taskbar: bigger touch targets */
+  .task-buttons .button { height: 32px; font-size: 13px; padding: 4px 10px; }
+  .start-button { height: 34px; }
+  .tray img { width: 18px; height: 18px; }
+  .clock { font-size: 13px; }
+
+  /* Start menu: widen & raise like a bottom sheet */
+  .start-menu {
+    width: 96vw;
+    left: 2vw;
+    right: 2vw;
+    border-radius: 10px;
+    max-height: min(70vh, 520px);
+    overflow: hidden;
+  }
+  .xp-start-body {
+    grid-template-columns: 1fr; /* single column */
+  }
+  .xp-right { border-left: 0; border-top: 1px solid rgba(0,0,0,.08); }
+
+  /* Work app: mail layout stacks */
+  .mail-layout { grid-template-columns: 1fr; }
+  .mail-list { max-height: 180px; }
+  .mail-pane { min-height: 220px; }
+
+  /* Work (explorer-style) stacks too */
+  .work-layout { grid-template-columns: 1fr; }
+  .work-nav { max-height: 200px; }
+}
+
+/* ====== Breakpoint 600px: phones portrait ====== */
+@media (max-width: 600px) {
+  :root { --tb-h: 48px; }
+
+  .desktop {
+    grid-template-columns: repeat(3, minmax(68px, 1fr));
+    gap: 10px 10px;
+    padding: 10px 8px calc(var(--tb-h) + 10px + var(--safe-b));
+  }
+  .icon img { width: 44px; height: 44px; }
+  .icon span { font-size: 11px; }
+
+  /* Windows: tighter insets */
+  .window.app {
+  top: calc(var(--safe-t) + 6px);
+  left: 6px;
+  right: auto;  /* ensure not pinned */
+  bottom: auto; /* ensure not pinned */
+  width: calc(100vw - 12px);
+  border-radius: 10px;
+}
+
+
+  /* MSN app: one column, avatars move below chat, bigger tap targets */
+  .msn-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "chat"
+      "avatars";
+    gap: 6px;
+    min-height: auto;
+  }
+  .msn-chat { max-height: 40vh; }
+  .msn-avatars { flex-direction: row; gap: 6px; }
+  .msn-avatar img { width: 84px; height: 84px; }
+  .msn-compose {
+    grid-template-columns: 1fr;
+  }
+  .msn-sendcol { flex-direction: row; }
+  .msn-tbtn, .msn-ctrl, .msn-send, .msn-nudge { padding: 8px 10px; font-size: 13px; }
+
+  /* Typography slightly larger for readability */
+  .mail-subject-lg { font-size: 18px; }
+  .mail-item { padding: 10px; }
+}
+
+/* ====== Ultra-narrow (<= 380px): 2 columns of icons ====== */
+@media (max-width: 380px) {
+  .desktop { grid-template-columns: repeat(2, minmax(68px, 1fr)); }
+}
+
+/* ====== Prefer reduced motion: disable nudge shake ====== */
+@media (prefers-reduced-motion: reduce) {
+  .msn-win.is-nudged { animation: none !important; }
+}
+
+/* Let windows size themselves; only *limit* size on mobile */
+@media (max-width: 900px) {
+  .window.app {
+    /* remove forced width */
+    width: auto;                /* <-- was: width: calc(100vw - 16px) */
+    max-width: calc(100vw - 16px);
+  }
+  /* Give the Contact window a sane default but still resizable */
+  .contact-win {
+    width: 520px !important;
+    max-width: min(520px, calc(100vw - 16px));
+  }
 }
 
