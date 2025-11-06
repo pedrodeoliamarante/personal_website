@@ -65,7 +65,7 @@
         {
           id: 'w-metalenz',
           company: 'Metalenz Inc.',
-          role: 'Embedded Systems Engineer',
+          role: 'Camera Systems Engineer',
           period: 'Jun 2024 – October 2025 • Boston, MA',
           location: 'Boston, MA',
           bullets: [
