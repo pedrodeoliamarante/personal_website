@@ -52,11 +52,11 @@
         {
           id: 'w-rivian',
           company: 'Rivian & Volkswagen Group Technologies, LLC',
-          role: 'Software Engineer (Infotainment Audio)',
+          role: 'Software Engineer',
           period: 'Nov 2025 - Current',
           unread: true,
           bullets: [
-            'Working on the Infotainment Audio team, developing everything related to Audio in the different RW vehicles',
+            'Working on the Infotainment Platform Audio team, developing everything related to Audio in the different RW vehicles',
 
           ]
         },
