@@ -74,7 +74,7 @@
             'Integrated polarized based imaging pipelines into CamX; optimized inference on DSP with SIMD/parallelism.',
             'Validated the optical stack with scopes, logic analyzers, ADC probes, and kernel tooling.',
             'Built eBPF tracing to track latency and drops; tuned power, clocks, and sensor states.',
-            'Extended SM8550 BSP; enabled secure boot and TrustZone binaries (QTEE).',
+            'Extended SM8550 BSP',
             'Implemented AOSP Biometrics HAL and TEE apps to manage secure keys and data.',
           ]
         },
@@ -86,8 +86,7 @@
           bullets: [
             'Built hardware-in-the-loop simulation platform for remote electronics labs.',
             'Developed FreeRTOS C++ for RP2040 to emulate circuits with FPGA interfaces.',
-            'Delivered secure multi-user experiments with low-latency camera streaming.',
-            'Created modular remote SDR lab using Pi 4 and ADALM-PLUTO with GNU Radio.',
+            'Developed modular remote SDR lab using Pi 4 and ADALM-PLUTO with GNU Radio.',
           ]
         },
         {
@@ -96,11 +95,10 @@
           role: 'Teaching Assistant',
           period: 'Dec 2022 – Jun 2024 • Seattle, WA',
           bullets: [
-            'Led systems programming labs (C/C++, memory, OS, concurrency).',
-            'Assisted embedded systems (RTOS, microcontrollers) and digital logic courses.',
-            'Supported students with tooling, debugging workflows, and labs.',
+            'TA for CSE 351 (Hardware/Software Interface), CSE 333 (Systems Programming), CSE 474 (Embedded Systems), and CSE 369 (Digital Logic).',
           ]
         }
+
       ];
 
       // Render mail UI inside the Work window
