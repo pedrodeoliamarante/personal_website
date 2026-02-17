@@ -80,6 +80,14 @@ body{
   border:1px solid var(--window-border);
   user-select:none;
 }
+/* CSS-based default widths (moved from inline styles) */
+.window.app[data-app="about"]   { width: 440px; }
+.window.app[data-app="notepad"] { width: 420px; }
+.window.app[data-app="work"]    { width: 680px; }
+.window.app[data-app="bio"]     { width: 640px; }
+.window.app[data-app="contact"] { width: 520px; }
+.window.app[data-app="doom"]    { width: 760px; }
+
 .window.is-hidden{ display:none; }
 .title-bar{ cursor:move; }
 .title-bar-controls button{ cursor:default; }
@@ -87,8 +95,9 @@ body{
 /* ============ Taskbar ============ */
 .taskbar{
   position:absolute; left:0; right:0; bottom:0;
-  height:var(--tb-h);
+  height:calc(var(--tb-h) + var(--safe-b));
   display:flex; align-items:center; gap:8px; padding:0;
+  padding-bottom:var(--safe-b);
   background:linear-gradient(to top, var(--taskbar-btm), var(--taskbar-top));
   border-top:2px solid #1a4aa5;
   box-shadow:0 -1px 0 #0a2a75 inset;
@@ -307,6 +316,9 @@ body{
   .contact-avatar{ width:64px; height:64px; }
 }
 
+/* ============ DOOM Container ============ */
+.doom-container { width: 720px; height: 480px; max-width: 100%; }
+
 /* ============ Context Menu / Shutdown ============ */
 .wm-context{
   background:#f9f9f9; border:1px solid #aaa; border-radius:4px;
@@ -339,14 +351,17 @@ body{
 
   /* Windows fit but remain draggable */
   .window.app{
-    top:calc(var(--safe-t) + 8px); left:8px;
-    width:calc(100vw - 16px);
+    top:calc(var(--safe-t) + 8px) !important; left:8px !important;
+    width:calc(100vw - 16px) !important;
     height:auto;
     max-height:calc(100dvh - var(--tb-h) - 24px - var(--safe-b) - var(--safe-t));
     overflow:hidden; border-radius:8px;
   }
   .window .window-body{ height:100%; overflow:auto; }
   .title-bar{ cursor:default; }
+
+  /* DOOM responsive */
+  .doom-container { width: 100% !important; height: auto !important; aspect-ratio: 3/2; }
 
   /* Taskbar & start menu tweaks */
   .task-buttons .button{ height:32px; font-size:13px; padding:4px 10px; }
@@ -382,10 +397,31 @@ body{
   .desktop a.icon span{ font-size:11px; }
 
   .window.app{
-    top:calc(var(--safe-t) + 6px); left:6px;
-    width:calc(100vw - 12px);
-    border-radius:10px;
+    top:var(--safe-t, 0px) !important;
+    left:0 !important;
+    width:100vw !important;
+    height:calc(100dvh - var(--tb-h) - var(--safe-b)) !important;
+    max-height:none !important;
+    border-radius:8px 8px 0 0;
   }
+  .window.app .window-body{
+    height:calc(100dvh - var(--tb-h) - var(--safe-b) - 30px);
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* Touch targets */
+  .task-buttons .button{ height:44px; }
+  .task-buttons .button .task-text{ max-width:100px; text-overflow:ellipsis; overflow:hidden; }
+
+  /* Contact grid stack */
+  .contact-grid .row{ grid-template-columns:1fr; }
+
+  /* MSN chat no max-height */
+  .msn-chat{ max-height:none; flex:1; }
+
+  /* Mail layout */
+  .mail-pane{ min-height:auto; }
 
   /* MSN tweaks */
   .msn-layout{

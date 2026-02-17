@@ -130,13 +130,14 @@
     });
     document.body.appendChild(ctxMenu);
 
-    // close on any outside click or Escape
+    // close on any outside click/touch or Escape
     const onDocDown = (ev) => {
       if (!ctxMenu.contains(ev.target)) hideContextMenu();
     };
     const onEsc = (ev) => { if (ev.key === 'Escape') hideContextMenu(); };
     setTimeout(() => {
       document.addEventListener('mousedown', onDocDown, { once: true });
+      document.addEventListener('touchstart', onDocDown, { once: true });
       document.addEventListener('keydown', onEsc, { once: true });
     }, 0);
   }

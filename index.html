@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Pedro XP Desktop</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <!-- XP look & your site styles -->
   <link rel="stylesheet" href="https://unpkg.com/xp.css" />
   <link rel="stylesheet" href="styles.css" />
@@ -150,7 +150,7 @@
 
     <!-- About -->
     <template id="tpl-about">
-      <div class="window app" data-app="about" data-icon="assets/0047 - Text Document.ico" style="top:80px; left:140px; width:440px;">
+      <div class="window app" data-app="about" data-icon="assets/0047 - Text Document.ico" style="top:80px; left:140px;">
         <div class="title-bar">
           <div class="title-bar-text">About Me</div>
           <div class="title-bar-controls">
@@ -168,7 +168,7 @@
 
     <!-- Notepad -->
     <template id="tpl-notepad">
-      <div class="window app" data-app="notepad" data-icon="assets/0199 - Notepad.ico" style="top:220px; left:260px; width:420px;">
+      <div class="window app" data-app="notepad" data-icon="assets/0199 - Notepad.ico" style="top:220px; left:260px;">
         <div class="title-bar">
           <div class="title-bar-text">Notepad</div>
           <div class="title-bar-controls">
@@ -185,7 +185,7 @@
 
     <!-- Work Experience (shell; content is rendered via js/apps/index.js) -->
     <template id="tpl-work">
-      <div class="window app" data-app="work" data-icon="assets/0096 - Mail.ico" style="top:140px; left:420px; width:680px;">
+      <div class="window app" data-app="work" data-icon="assets/0096 - Mail.ico" style="top:140px; left:420px;">
         <div class="title-bar">
           <div class="title-bar-text">Work Experience</div>
           <div class="title-bar-controls">
@@ -221,7 +221,7 @@
 
     <!-- MSN Bio -->
     <template id="tpl-bio">
-      <div class="window app msn-win" data-app="bio" data-icon="assets/msn_butterfly.png" style="top:160px; left:160px; width:640px;">
+      <div class="window app msn-win" data-app="bio" data-icon="assets/msn_butterfly.png" style="top:160px; left:160px;">
         <div class="title-bar">
           <div class="title-bar-text">MSN Messenger — Conversation</div>
           <div class="title-bar-controls">
@@ -298,7 +298,7 @@
 
     <!-- Contact -->
     <template id="tpl-contact">
-      <div class="window app contact-win" data-app="contact" data-icon="assets/0050 - Address Book.ico" style="top:180px; left:220px; width:520px;">
+      <div class="window app contact-win" data-app="contact" data-icon="assets/0050 - Address Book.ico" style="top:180px; left:220px;">
         <div class="title-bar">
           <div class="title-bar-text">Contact</div>
           <div class="title-bar-controls">
@@ -345,7 +345,7 @@
 
     <!-- Doom -->
     <template id="tpl-doom">
-      <div class="window app" data-app="doom" data-icon="assets/doom.png" style="top:120px; left:360px; width:760px;">
+      <div class="window app" data-app="doom" data-icon="assets/doom.png" style="top:120px; left:360px;">
         <div class="title-bar">
           <div class="title-bar-text">DOOM</div>
           <div class="title-bar-controls">
@@ -357,7 +357,7 @@
         <div class="window-body">
           <div class="emu-frame" style="background:#000; border:1px solid #bfcde0; border-radius:6px; overflow:hidden;">
             <!-- The emulator canvas mounts here -->
-            <div class="doom-container" style="width:720px; height:480px;"></div>
+            <div class="doom-container"></div>
           </div>
           <div class="status-bar">
             <p class="status-bar-field">Click window to capture keyboard • ESC to release</p>

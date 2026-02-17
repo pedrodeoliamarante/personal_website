@@ -123,53 +123,74 @@
     return Math.max(min, Math.min(max, n));
   }
 
-  // Attach minimal dragging on title bar
+  // Attach minimal dragging on title bar (mouse + touch)
   function enableDrag(winEl) {
-  const bar = winEl.querySelector('.title-bar');
-  if (!bar) return;
+    const bar = winEl.querySelector('.title-bar');
+    if (!bar) return;
 
-  let dragging = false;
-  let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+    let dragging = false;
+    let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
-  const onMove = (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    const taskbarH = document.querySelector('.taskbar')?.offsetHeight || 34;
-    const pad = 8;
-    const maxL = window.innerWidth - pad - 50;
-    const maxT = window.innerHeight - taskbarH - pad - 30;
-    const newL = Math.max(pad, Math.min(startLeft + dx, maxL));
-    const newT = Math.max(pad, Math.min(startTop  + dy, maxT));
-    winEl.style.left = `${newL}px`;
-    winEl.style.top  = `${newT}px`;
-  };
+    function getXY(e) {
+      if (e.touches && e.touches.length) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+      return { x: e.clientX, y: e.clientY };
+    }
 
-  const onUp = () => {
-    if (!dragging) return;
-    dragging = false;
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
-    document.body.style.userSelect = '';
-    saveWindowState(winEl.dataset.appId);
-  };
+    const onMove = (e) => {
+      if (!dragging) return;
+      const { x, y } = getXY(e);
+      const dx = x - startX;
+      const dy = y - startY;
+      const taskbarH = document.querySelector('.taskbar')?.offsetHeight || 34;
+      const pad = 8;
+      const maxL = window.innerWidth - pad - 50;
+      const maxT = window.innerHeight - taskbarH - pad - 30;
+      const newL = Math.max(pad, Math.min(startLeft + dx, maxL));
+      const newT = Math.max(pad, Math.min(startTop  + dy, maxT));
+      winEl.style.left = `${newL}px`;
+      winEl.style.top  = `${newT}px`;
+      if (e.cancelable) e.preventDefault();
+    };
 
-  bar.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.title-bar-controls')) return;
-    if (winEl.dataset.maximized === '1') return;
-    dragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = parseInt(winEl.style.left || '0', 10);
-    startTop  = parseInt(winEl.style.top  || '0', 10);
-    document.body.style.userSelect = 'none';
-    bringToFrontInternal(winEl);
-    setActiveInternal(winEl.dataset.appId);
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-    e.preventDefault();
-  });
-}
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onUp);
+      document.removeEventListener('touchcancel', onUp);
+      document.body.style.userSelect = '';
+      saveWindowState(winEl.dataset.appId);
+    };
+
+    function startDrag(e) {
+      if (e.target.closest('.title-bar-controls')) return;
+      if (winEl.dataset.maximized === '1') return;
+      // Skip drag on phones (auto-maximized)
+      if (window.innerWidth <= 600) return;
+      dragging = true;
+      const { x, y } = getXY(e);
+      startX = x;
+      startY = y;
+      startLeft = parseInt(winEl.style.left || '0', 10);
+      startTop  = parseInt(winEl.style.top  || '0', 10);
+      document.body.style.userSelect = 'none';
+      bringToFrontInternal(winEl);
+      setActiveInternal(winEl.dataset.appId);
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', onUp);
+      document.addEventListener('touchcancel', onUp);
+      e.preventDefault();
+    }
+
+    bar.addEventListener('mousedown', startDrag);
+    bar.addEventListener('touchstart', startDrag, { passive: false });
+  }
 
 
   function applySavedGeometry(id, winEl) {
@@ -225,10 +246,12 @@
     btnClose?.addEventListener('click', () => close(appDef.id));
     btnMax?.addEventListener('click', () => toggleMaximize(appDef.id));
 
-    winEl.addEventListener('mousedown', () => {
+    function focusWindow() {
       bringToFrontInternal(winEl);
       setActiveInternal(appDef.id);
-    });
+    }
+    winEl.addEventListener('mousedown', focusWindow);
+    winEl.addEventListener('touchstart', focusWindow);
 
     // inject into desktop
     desktop.appendChild(frag); // append the entire fragment (contains winEl)
@@ -284,6 +307,11 @@
     bringToFrontInternal(inst.el);
     setActiveInternal(id);
 
+    // Auto-maximize on phones
+    if (window.innerWidth <= 600 && inst.el.dataset.maximized !== '1') {
+      maximizeInternal(inst.el, false);
+    }
+
     if (emitOpenEvent) emit('wm:open', { id, title: app.title, icon: app.icon, el: inst.el });
     app.onOpen?.(inst.el, api);
 
@@ -308,6 +336,12 @@
     activeId = id;
     saveActive();
     emit('wm:focus', { id });
+    // Update URL hash to reflect active app (B1)
+    if (id) {
+      history.replaceState(null, '', '#' + id);
+    } else {
+      history.replaceState(null, '', location.pathname);
+    }
   }
 
   function maximizeInternal(winEl, emitEvt = true) {
@@ -318,11 +352,14 @@
     winEl.dataset.width = winEl.style.width;
     winEl.dataset.height = winEl.style.height;
 
-    // fill viewport (minus taskbar if present)
+    // fill viewport (minus taskbar, using CSS vars for dynamic height)
+    const root = getComputedStyle(document.documentElement);
+    const tbH = root.getPropertyValue('--tb-h').trim() || '34px';
+    const safeB = root.getPropertyValue('--safe-b').trim() || '0px';
     winEl.style.top = '8px';
     winEl.style.left = '8px';
     winEl.style.width = 'calc(100vw - 16px)';
-    winEl.style.height = 'calc(100vh - 42px)';
+    winEl.style.height = `calc(100vh - ${tbH} - ${safeB} - 16px)`;
     winEl.dataset.maximized = '1';
     if (emitEvt) emit('wm:maximize', { id: winEl.dataset.appId });
     saveWindowState(winEl.dataset.appId);
@@ -379,6 +416,11 @@
     if (activeId === id) {
       activeId = null;
       saveActive();
+    }
+
+    // Clear hash when all windows are closed (B2)
+    if (instances.size === 0) {
+      history.replaceState(null, '', location.pathname);
     }
 
     // persist open set
@@ -477,6 +519,14 @@
     }
   }
   document.addEventListener('keydown', handleKeydown, { passive: false });
+
+  // --------- hashchange listener (B3) ----------
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.replace('#', '');
+    if (id && registry.has(id)) {
+      open(id);
+    }
+  });
 
   // --------- boot restore ----------
   function restoreSession() {
