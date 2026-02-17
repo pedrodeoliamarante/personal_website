@@ -1,0 +1,9 @@
+node_modules
+dist
+.DS_Store
+*.local
+doom/
+files.txt
+release.zip
+public/assets
+public/emu
