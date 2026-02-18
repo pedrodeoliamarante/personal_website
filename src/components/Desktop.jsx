@@ -23,7 +23,7 @@ const appComponents = {
 };
 
 export default function Desktop({ onShutdown }) {
-  const { state, open } = useWindowManager();
+  const { state, open, toggleMaximize } = useWindowManager();
 
   // Mobile: set --vh for real viewport height
   useEffect(() => {
@@ -49,16 +49,17 @@ export default function Desktop({ onShutdown }) {
     };
   }, []);
 
-  // First visit: auto-open About
+  // First visit: auto-open PCM Audio maximized
   useEffect(() => {
     const FIRST_KEY = 'site:firstVisit';
     const first = localStorage.getItem(FIRST_KEY);
     if (!first && !location.hash) {
-      const aboutApp = apps.find(a => a.id === 'about');
-      open('about', aboutApp?.defaultPos);
+      const pcmApp = apps.find(a => a.id === 'pcm');
+      open('pcm', pcmApp?.defaultPos);
+      toggleMaximize('pcm');
     }
     localStorage.setItem(FIRST_KEY, '1');
-  }, [open]);
+  }, [open, toggleMaximize]);
 
   const openWindows = Object.entries(state.windows)
     .filter(([, w]) => w.open);
