@@ -173,10 +173,6 @@ export default function BioApp({ appId }) {
       <div className="msn-compose">
         <div className="msn-formatbar">
           <button className="fmt">A</button>
-          <button className="fmt">🙂</button>
-          <button className="fmt">🎤</button>
-          <button className="fmt">😉</button>
-          <button className="fmt">🎁</button>
         </div>
         <textarea className="msn-input" placeholder="" />
         <div className="msn-sendcol">

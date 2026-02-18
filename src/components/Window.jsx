@@ -6,6 +6,7 @@ export default function Window({ id, title, icon, children, className = '' }) {
   const win = state.windows[id];
   const elRef = useRef(null);
   const dragging = useRef(false);
+  const resizing = useRef(false);
 
   // Compute styles
   const isHidden = !win || !win.open || win.minimized;
@@ -92,6 +93,61 @@ export default function Window({ id, title, icon, children, className = '' }) {
     e.preventDefault();
   }, [id, win?.maximized, focus, updateGeometry]);
 
+  // ---- Resize ----
+  const startResize = useCallback((e) => {
+    if (win?.maximized) return;
+    if (window.innerWidth <= 600) return;
+
+    const el = elRef.current;
+    if (!el) return;
+
+    resizing.current = true;
+    e.stopPropagation();
+
+    const getXY = (ev) => {
+      if (ev.touches?.length) return { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
+      return { x: ev.clientX, y: ev.clientY };
+    };
+
+    const { x: startX, y: startY } = getXY(e);
+    const startW = el.offsetWidth;
+    const startH = el.offsetHeight;
+
+    document.body.style.userSelect = 'none';
+    focus(id);
+
+    const onMove = (ev) => {
+      if (!resizing.current) return;
+      const { x, y } = getXY(ev);
+      const newW = Math.max(200, startW + (x - startX));
+      const newH = Math.max(100, startH + (y - startY));
+      el.style.width = `${newW}px`;
+      el.style.height = `${newH}px`;
+      if (ev.cancelable) ev.preventDefault();
+    };
+
+    const onUp = () => {
+      if (!resizing.current) return;
+      resizing.current = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onUp);
+      document.removeEventListener('touchcancel', onUp);
+      document.body.style.userSelect = '';
+      if (el) {
+        updateGeometry(id, { width: el.style.width, height: el.style.height });
+      }
+    };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onUp);
+    document.addEventListener('touchcancel', onUp);
+    e.preventDefault();
+  }, [id, win?.maximized, focus, updateGeometry]);
+
   // Auto-maximize on phones
   useEffect(() => {
     if (win && win.open && !win.minimized && !win.maximized && window.innerWidth <= 600) {
@@ -123,6 +179,11 @@ export default function Window({ id, title, icon, children, className = '' }) {
         </div>
       </div>
       {children}
+      {!win.maximized && <div
+        className="resize-handle"
+        onMouseDown={startResize}
+        onTouchStart={startResize}
+      />}
     </div>
   );
 }
