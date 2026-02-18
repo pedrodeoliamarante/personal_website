@@ -49,19 +49,14 @@ body{
   image-rendering: crisp-edges;
 }
 
-/* Classic .ico — smaller */
+/* Classic .ico icons */
 .desktop a.icon img[src$=".ico"] {
   width: 48px !important;
   height: 48px !important;
 }
 
-/* Non-.ico (png/jpg/svg/webp/gif) — bigger */
-.desktop a.icon img[src$=".png"],
-.desktop a.icon img[src$=".jpg"],
-.desktop a.icon img[src$=".jpeg"],
-.desktop a.icon img[src$=".webp"],
-.desktop a.icon img[src$=".gif"],
-.desktop a.icon img[src$=".svg"] {
+/* Non-.ico (png/jpg) — larger */
+.desktop a.icon img:not([src$=".ico"]) {
   width: 72px !important;
   height: 72px !important;
   object-fit: contain;
@@ -394,7 +389,7 @@ body{
     gap:10px 10px;
     padding:10px 8px calc(var(--tb-h) + 10px + var(--safe-b));
   }
-  .desktop a.icon img{ width:64px !important; height:64px !important; }
+  .desktop a.icon img{ width:48px !important; height:48px !important; }
   .desktop a.icon span{ font-size:11px; }
 
   .window.app{

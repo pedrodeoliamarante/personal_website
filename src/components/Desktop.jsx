@@ -9,6 +9,7 @@ import NotepadApp from '../apps/NotepadApp';
 import WorkApp from '../apps/WorkApp';
 import BioApp from '../apps/BioApp';
 import ContactApp from '../apps/ContactApp';
+import PcmApp from '../apps/PcmApp';
 import DoomApp from '../apps/DoomApp';
 
 const appComponents = {
@@ -17,6 +18,7 @@ const appComponents = {
   work: { component: WorkApp, className: '' },
   bio: { component: BioApp, className: 'msn-win' },
   contact: { component: ContactApp, className: 'contact-win' },
+  pcm: { component: PcmApp, className: '' },
   doom: { component: DoomApp, className: '' },
 };
 
