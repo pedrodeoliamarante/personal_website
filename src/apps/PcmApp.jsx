@@ -633,11 +633,19 @@ function playTone(sampleRate, bitDepth, audioFn, loop) {
   const src = ctx.createBufferSource();
   src.buffer = buffer;
   src.loop = !!loop;
+
+  let stopped = false;
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    try { src.stop(); } catch { /* already stopped */ }
+    try { ctx.close(); } catch { /* already closed */ }
+  };
+
   src.connect(ctx.destination);
   src.start();
-  // Auto-close context when one-shot finishes
-  if (!loop) src.onended = () => ctx.close();
-  return () => { src.stop(); ctx.close(); };
+  if (!loop) src.onended = stop;
+  return stop;
 }
 
 /* ═══ Stage labels ═══ */
@@ -904,7 +912,8 @@ export default function PcmApp() {
           {allDone && (
             <div className="pcm-playback">
               <button className="pcm-play-btn" onClick={() => {
-                playTone(sampleRate, bitDepth, SIGNALS[signal].audio, false);
+                stopPlayback();
+                stopRef.current = playTone(sampleRate, bitDepth, SIGNALS[signal].audio, false);
               }}>
                 Play once
               </button>
