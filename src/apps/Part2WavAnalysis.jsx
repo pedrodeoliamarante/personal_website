@@ -327,8 +327,8 @@ function playResampled(origSamples, origRate, userRate, bitDepth, startOffset = 
 }
 
 const DEMO_TRACKS = [
-  { label: 'Chocolate Matter - Sweet Trip', url: '/assets/Chocolate Matter - Sweet Trip.flac' },
-  { label: 'World Revolution - Malcolm Robinson', url: '/assets/World Revolution - Malcolm Robinson.flac' },
+  { label: 'Chocolate Matter - Sweet Trip', url: '/assets/Chocolate Matter - Sweet Trip.mp3' },
+  { label: 'World Revolution - Malcolm Robinson', url: '/assets/World Revolution - Malcolm Robinson.mp3' },
 ];
 
 /* ═══ Decode audio ArrayBuffer to Float32Array ═══ */
