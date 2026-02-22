@@ -49,16 +49,13 @@ export default function Desktop({ onShutdown }) {
     };
   }, []);
 
-  // First visit: auto-open PCM Audio maximized
+  // Auto-open PCM Audio maximized when #pcm is in the URL
   useEffect(() => {
-    const FIRST_KEY = 'site:firstVisit';
-    const first = localStorage.getItem(FIRST_KEY);
-    if (!first && !location.hash) {
+    if (location.hash === '#pcm') {
       const pcmApp = apps.find(a => a.id === 'pcm');
       open('pcm', pcmApp?.defaultPos);
       toggleMaximize('pcm');
     }
-    localStorage.setItem(FIRST_KEY, '1');
   }, [open, toggleMaximize]);
 
   const openWindows = Object.entries(state.windows)
