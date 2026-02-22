@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import Part2WavAnalysis from './Part2WavAnalysis';
 
 /* ═══ Constants ═══ */
 const VIS_CYCLES = 2;       // cycles shown in the visual
@@ -667,6 +668,7 @@ export default function PcmApp() {
   const [sampleRate, setSampleRate] = useState(8000);
   const [signal, setSignal] = useState('sine');
   const [playing, setPlaying] = useState(false);
+  const [currentPart, setCurrentPart] = useState(0);
   const stopRef = useRef(null);
 
   // Visual sample count derived from sample rate (scaled down for readability)
@@ -778,165 +780,240 @@ export default function PcmApp() {
     draw([0, 0, 0, 0]);
   };
 
+  const skipAnimation = () => {
+    if (!animating || stage < 0) return;
+    if (animId.current) cancelAnimationFrame(animId.current);
+    const prog = [...progressRef.current];
+    prog[stage] = 1;
+    progressRef.current = prog;
+    setProgress([...prog]);
+    draw(prog);
+    setAnimating(false);
+  };
+
   const stageComplete = stage >= 0 && !animating;
   const allDone = stage >= 3 && !animating;
 
   return (
     <div className="window-body pcm-body">
-      <div className="pcm-controls">
-        {!allDone && (
-          <button className="pcm-run-btn" onClick={nextStep} disabled={animating}>
-            {stage < 0
-              ? 'Start'
-              : `Next: ${STAGE_NAMES[stage + 1]}`}
-          </button>
+      <div className="pcm-scroll">
+        {currentPart === 0 && (
+          <div className="pcm-section">
+            <div className="pcm-section-label">How Digital Audio Works</div>
+            <p className="pcm-desc">
+              This is an interactive deep dive into digital audio.
+            </p>
+            <div className="pcm-section-label" style={{ marginTop: 8 }}>Contents</div>
+            <ul className="pcm-toc">
+              <li><strong>Part 1: Analog to Digital</strong>, how sound waves become
+                numbers through sampling and quantization</li>
+              <li><strong>Part 2: Parameter Experimentation</strong>, load real audio
+                and hear how sample rate and bit depth affect quality</li>
+              <li className="pcm-toc-future">Part 3: Audio Compression (coming soon)</li>
+              <li className="pcm-toc-future">Part 4: Spectral Analysis &amp; FFT (coming soon)</li>
+              <li className="pcm-toc-future">Part 5: ...</li>
+            </ul>
+          </div>
         )}
-        {stage >= 0 && (
-          <button className="pcm-run-btn" onClick={reset}>
-            Reset
-          </button>
-        )}
-        <div className="pcm-params">
-          <select className="pcm-param-select" value={signal} onChange={e => setSignal(e.target.value)} disabled={stage >= 0}>
-            {Object.entries(SIGNALS).map(([k, v]) => (
-              <option key={k} value={k}>{v.label}</option>
-            ))}
-          </select>
-          <select className="pcm-param-select" value={sampleRate} onChange={e => setSampleRate(Number(e.target.value))} disabled={stage >= 0}>
-            <option value={4000}>4 kHz</option>
-            <option value={8000}>8 kHz</option>
-            <option value={16000}>16 kHz</option>
-            <option value={44100}>44.1 kHz</option>
-          </select>
-          <select className="pcm-param-select" value={bitDepth} onChange={e => setBitDepth(Number(e.target.value))} disabled={stage >= 0}>
-            <option value={2}>2-bit</option>
-            <option value={4}>4-bit</option>
-            <option value={8}>8-bit</option>
-          </select>
-          <span>mono</span>
-          {stage >= 0 && (
-            <span className="pcm-step-indicator">
-              Step {stage + 1}/4{animating ? ' ...' : ' done'}
-            </span>
-          )}
-        </div>
-      </div>
 
-      <div className="pcm-section">
-        <div className="pcm-section-label">1. Sound, Analog Signal</div>
-        <p className="pcm-desc">
-          Sound is vibrations traveling through air. In the animation below, a
-          person speaking opens and closes their mouth. When the mouth
-          opens wide the vocal cords push air outward, squeezing nearby
-          molecules together (compression, shown in orange).
-          When the mouth closes, pressure drops and molecules spread apart
-          (rarefaction, shown in blue). This pressure wave
-          ripples outward from the speaker toward the microphone. Inside the
-          mic, a thin diaphragm vibrates back and forth with the
-          arriving pressure. That movement drives a coil through a magnetic
-          field, generating a tiny electrical voltage, the
-          continuous analog signal shown at the bottom of the canvas.
-        </p>
-        <canvas
-          ref={el => { refs.current[0] = el; }}
-          className="pcm-canvas pcm-canvas-physical"
-        />
-      </div>
+        {currentPart === 1 && (
+          <>
+            <div className="pcm-section">
+              <div className="pcm-section-label">Part 1: Analog to Digital</div>
+              <p className="pcm-desc">
+                How does sound become a sequence of numbers a computer can store?
+                Walk through each step of the process below.
+              </p>
+            </div>
 
-      {stage >= 1 && (
-        <div className="pcm-section">
-          <div className="pcm-section-label">2. Sampling</div>
-          <p className="pcm-desc">
-            The continuous voltage from the microphone changes every instant.
-            Sampling means measuring that voltage at evenly-spaced moments
-            in time. At {sampleRate.toLocaleString()} Hz we would
-            take {sampleRate.toLocaleString()} measurements per second. Here
-            we show <strong>{visSamples}</strong> samples for clarity. The
-            higher the sample rate, the more accurately we preserve the
-            original shape.
-          </p>
-          <canvas
-            ref={el => { refs.current[1] = el; }}
-            className="pcm-canvas pcm-canvas-stage"
-          />
-        </div>
-      )}
-
-      {stage >= 2 && (
-        <div className="pcm-section">
-          <div className="pcm-section-label">3. Quantization</div>
-          <p className="pcm-desc">
-            A computer can only store discrete numbers. With {bitDepth}-bit
-            depth we can represent values
-            from 0 to {Math.pow(2, bitDepth) - 1}, just{' '}
-            <strong>{Math.pow(2, bitDepth)}</strong> possible levels. Each
-            sampled voltage must be converted to the nearest level and stored
-            as an integer code. The small difference between the original and
-            quantized value is the quantization error (shown in red).
-          </p>
-          <canvas
-            ref={el => { refs.current[2] = el; }}
-            className="pcm-canvas pcm-canvas-stage"
-          />
-        </div>
-      )}
-
-      {stage >= 2 && (
-        <DataTable
-          quantized={data.current.quantized}
-          samplingProg={progress[1]}
-          quantProg={progress[2]}
-          numSamples={visSamples}
-          bitDepth={bitDepth}
-        />
-      )}
-
-      {stage >= 3 && (
-        <div className="pcm-section">
-          <div className="pcm-section-label">4. Digital Output, PCM</div>
-          <p className="pcm-desc">
-            The sequence of integer codes is the PCM (Pulse-Code
-            Modulation) data, the standard format for uncompressed digital
-            audio (.wav files). Below is the raw data buffer: each sample is
-            stored as a {bitDepth}-bit unsigned integer (0
-            to {Math.pow(2, bitDepth) - 1}).{' '}
-            {Math.pow(2, bitDepth - 1)} means the speaker
-            is at rest (silence). {Math.pow(2, bitDepth) - 1} pushes
-            the speaker as far out as it can go,
-            0 pulls it as far in. The further a value is
-            from {Math.pow(2, bitDepth - 1)}, the louder the sound. To
-            play it back, a speaker outputs one sample
-            every 1/{sampleRate.toLocaleString()}th of a second.
-          </p>
-          <PcmBuffer quantized={data.current.quantized} progress={progress[3]} bitDepth={bitDepth} />
-          {allDone && (
-            <div className="pcm-playback">
-              <button className="pcm-play-btn" onClick={() => {
-                stopPlayback();
-                stopRef.current = playTone(sampleRate, bitDepth, SIGNALS[signal].audio, false);
-              }}>
-                Play once
-              </button>
-              {!playing ? (
-                <button className="pcm-play-btn" onClick={() => {
-                  stopPlayback();
-                  stopRef.current = playTone(sampleRate, bitDepth, SIGNALS[signal].audio, true);
-                  setPlaying(true);
-                }}>
-                  Loop
-                </button>
-              ) : (
-                <button className="pcm-play-btn" onClick={stopPlayback}>
-                  Stop
+            <div className="pcm-controls">
+              {!allDone && (
+                <button className="pcm-run-btn" onClick={nextStep} disabled={animating}>
+                  {stage < 0
+                    ? 'Start'
+                    : `Next: ${STAGE_NAMES[stage + 1]}`}
                 </button>
               )}
-              <span className="pcm-playback-info">
-                {sampleRate >= 1000 ? `${sampleRate / 1000}kHz` : `${sampleRate}Hz`} / {bitDepth}-bit
-              </span>
+              <button className="pcm-skip-btn" onClick={skipAnimation} disabled={!animating} title="Skip animation">
+                Skip &#x23ED;
+              </button>
+              {stage >= 0 && (
+                <button className="pcm-run-btn" onClick={reset}>
+                  Reset
+                </button>
+              )}
+              <div className="pcm-params">
+                <select className="pcm-param-select" value={signal} onChange={e => setSignal(e.target.value)} disabled={stage >= 0}>
+                  {Object.entries(SIGNALS).map(([k, v]) => (
+                    <option key={k} value={k}>{v.label}</option>
+                  ))}
+                </select>
+                <select className="pcm-param-select" value={sampleRate} onChange={e => setSampleRate(Number(e.target.value))} disabled={stage >= 0}>
+                  <option value={4000}>4 kHz</option>
+                  <option value={8000}>8 kHz</option>
+                  <option value={16000}>16 kHz</option>
+                  <option value={44100}>44.1 kHz</option>
+                </select>
+                <select className="pcm-param-select" value={bitDepth} onChange={e => setBitDepth(Number(e.target.value))} disabled={stage >= 0}>
+                  <option value={2}>2-bit</option>
+                  <option value={4}>4-bit</option>
+                  <option value={8}>8-bit</option>
+                </select>
+                <span>mono</span>
+                {stage >= 0 && (
+                  <span className="pcm-step-indicator">
+                    Step {stage + 1}/4{animating ? ' ...' : ' done'}
+                  </span>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      )}
+
+            <div className="pcm-section">
+              <div className="pcm-section-label">1. Sound, Analog Signal</div>
+              <p className="pcm-desc">
+                Sound is vibrations traveling through air. In the animation below, a
+                person speaking opens and closes their mouth. When the mouth
+                opens wide the vocal cords push air outward, squeezing nearby
+                molecules together (compression, shown in orange).
+                When the mouth closes, pressure drops and molecules spread apart
+                (rarefaction, shown in blue). This pressure wave
+                ripples outward from the speaker toward the microphone. Inside the
+                mic, a thin diaphragm vibrates back and forth with the
+                arriving pressure. That movement drives a coil through a magnetic
+                field, generating a tiny electrical voltage, the
+                continuous analog signal shown at the bottom of the canvas.
+              </p>
+              <canvas
+                ref={el => { refs.current[0] = el; }}
+                className="pcm-canvas pcm-canvas-physical"
+              />
+            </div>
+
+            {stage >= 1 && (
+              <div className="pcm-section">
+                <div className="pcm-section-label">2. Sampling</div>
+                <p className="pcm-desc">
+                  The continuous voltage from the microphone changes every instant.
+                  Sampling means measuring that voltage at evenly-spaced moments
+                  in time. At {sampleRate.toLocaleString()} Hz we would
+                  take {sampleRate.toLocaleString()} measurements per second. Here
+                  we show <strong>{visSamples}</strong> samples for clarity. The
+                  higher the sample rate, the more accurately we preserve the
+                  original shape.
+                </p>
+                <canvas
+                  ref={el => { refs.current[1] = el; }}
+                  className="pcm-canvas pcm-canvas-stage"
+                />
+              </div>
+            )}
+
+            {stage >= 2 && (
+              <div className="pcm-section">
+                <div className="pcm-section-label">3. Quantization</div>
+                <p className="pcm-desc">
+                  A computer can only store discrete numbers. With {bitDepth}-bit
+                  depth we can represent values
+                  from 0 to {Math.pow(2, bitDepth) - 1}, just{' '}
+                  <strong>{Math.pow(2, bitDepth)}</strong> possible levels. Each
+                  sampled voltage must be converted to the nearest level and stored
+                  as an integer code. The small difference between the original and
+                  quantized value is the quantization error (shown in red).
+                </p>
+                <canvas
+                  ref={el => { refs.current[2] = el; }}
+                  className="pcm-canvas pcm-canvas-stage"
+                />
+              </div>
+            )}
+
+            {stage >= 2 && (
+              <DataTable
+                quantized={data.current.quantized}
+                samplingProg={progress[1]}
+                quantProg={progress[2]}
+                numSamples={visSamples}
+                bitDepth={bitDepth}
+              />
+            )}
+
+            {stage >= 3 && (
+              <div className="pcm-section">
+                <div className="pcm-section-label">4. Digital Output, PCM</div>
+                <p className="pcm-desc">
+                  The sequence of integer codes is the PCM (Pulse-Code
+                  Modulation) data, the standard format for uncompressed digital
+                  audio (.wav files). Below is the raw data buffer: each sample is
+                  stored as a {bitDepth}-bit unsigned integer (0
+                  to {Math.pow(2, bitDepth) - 1}).{' '}
+                  {Math.pow(2, bitDepth - 1)} means the speaker
+                  is at rest (silence). {Math.pow(2, bitDepth) - 1} pushes
+                  the speaker as far out as it can go,
+                  0 pulls it as far in. The further a value is
+                  from {Math.pow(2, bitDepth - 1)}, the louder the sound. To
+                  play it back, a speaker outputs one sample
+                  every 1/{sampleRate.toLocaleString()}th of a second.
+                </p>
+                <PcmBuffer quantized={data.current.quantized} progress={progress[3]} bitDepth={bitDepth} />
+                {allDone && (
+                  <div className="pcm-playback">
+                    <button className="pcm-play-btn" onClick={() => {
+                      stopPlayback();
+                      stopRef.current = playTone(sampleRate, bitDepth, SIGNALS[signal].audio, false);
+                    }}>
+                      Play once
+                    </button>
+                    {!playing ? (
+                      <button className="pcm-play-btn" onClick={() => {
+                        stopPlayback();
+                        stopRef.current = playTone(sampleRate, bitDepth, SIGNALS[signal].audio, true);
+                        setPlaying(true);
+                      }}>
+                        Loop
+                      </button>
+                    ) : (
+                      <button className="pcm-play-btn" onClick={stopPlayback}>
+                        Stop
+                      </button>
+                    )}
+                    <span className="pcm-playback-info">
+                      {sampleRate >= 1000 ? `${sampleRate / 1000}kHz` : `${sampleRate}Hz`} / {bitDepth}-bit
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {allDone && (
+          <div style={currentPart !== 2 ? { display: 'none' } : undefined}>
+            <Part2WavAnalysis />
+          </div>
+        )}
+      </div>
+
+      <div className="pcm-nav">
+        <button
+          className={'pcm-nav-btn' + (currentPart === 0 ? ' pcm-nav-btn-active' : '')}
+          onClick={() => setCurrentPart(0)}
+        >
+          Introduction
+        </button>
+        <button
+          className={'pcm-nav-btn' + (currentPart === 1 ? ' pcm-nav-btn-active' : '')}
+          onClick={() => setCurrentPart(1)}
+        >
+          Part 1
+        </button>
+        <button
+          className={'pcm-nav-btn' + (currentPart === 2 ? ' pcm-nav-btn-active' : '')}
+          onClick={() => setCurrentPart(2)}
+          disabled={!allDone}
+        >
+          Part 2
+        </button>
+      </div>
     </div>
   );
 }
