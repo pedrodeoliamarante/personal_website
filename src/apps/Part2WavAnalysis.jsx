@@ -326,9 +326,10 @@ function playResampled(origSamples, origRate, userRate, bitDepth, startOffset = 
   return { stop, getPosition };
 }
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const DEMO_TRACKS = [
-  { label: 'Chocolate Matter - Sweet Trip', url: '/assets/Chocolate Matter - Sweet Trip.mp3' },
-  { label: 'World Revolution - Malcolm Robinson', url: '/assets/World Revolution - Malcolm Robinson.mp3' },
+  { label: 'Chocolate Matter - Sweet Trip', url: `/assets/Chocolate Matter - Sweet Trip.${isMobile ? 'mp3' : 'flac'}` },
+  { label: 'World Revolution - Malcolm Robinson', url: `/assets/World Revolution - Malcolm Robinson.${isMobile ? 'mp3' : 'flac'}` },
 ];
 
 /* ═══ Decode audio ArrayBuffer to Float32Array ═══ */
